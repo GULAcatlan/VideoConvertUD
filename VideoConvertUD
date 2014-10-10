@@ -1,0 +1,36 @@
+#!/bin/bash
+#este sofware se distribuye con licencia GPL.V3
+#inicio del programa 
+zenity --info --title="VideoConvertUD" --text="Bienvenido al video convertidor de la Universidad Distrital"
+#seleccion del archivo origen
+file=(`zenity --file-selection --title="Selecciona archivo a covertir"`)
+if [ $? == 0 ]
+then
+	#escoger nombre de salida
+	salida=`zenity --entry --text="Nombre de archivo" --entry-text="video"  --title="Escoge nombre de salida con la extension"`
+	if [ $? == 0 ]
+	then
+		#seleccionar formato de conversion
+		extension=$(zenity --list \
+		--title="elija extension" \
+		--text="elija extension" \
+		--column "extension" \
+		MOD \
+		mp4 \
+		avi \
+		mpg \
+		mkv \
+		mov \
+		MOV)
+		if [ $? == 0 ]
+		then
+			#seleccionar carpeta donde se guardaran los archivos de salida
+			carpeta=`zenity --file-selection --directory --title="Selecciona carpeta de destino"`
+				if [ $? == 0 ]
+				then
+				#realizar la conversion del video
+				avconv -i "$file" -c:a copy "$carpeta/$salida.$extension" | zenity --progress --text="Convirtiendo ..." --auto-close --auto-kill --pulsate
+				fi
+		fi
+	fi
+fi
